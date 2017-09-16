@@ -59,6 +59,7 @@ function compareInv(product, units) {
   });
 }
 
+// Restart the Manager console
 function reset() {
   inquirer
     .prompt({
