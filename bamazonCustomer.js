@@ -1,192 +1,96 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+var mysql = require('mysql');
+var inquirer = require('inquirer');
+var table = require('console.table');
 
 var connection = mysql.createConnection({
-  host: "localhost",
+  host: 'localhost',
   port: 8889,
-
-  // Your username
-  user: "root",
-
-  // Your password
-  password: "root",
-  database: "bamazon"
+  user: 'root',
+  password: 'root',
+  database: 'bamazon'
 });
+
+var questions = [
+  {
+    name: 'product',
+    type: 'input',
+    message: 'Please enter the ID of the product that you would like to buy:'
+  },
+  {
+    name: 'units',
+    type: 'input',
+    message: 'How many units would you like to buy?'
+  }
+];
 
 connection.connect(function(err) {
   if (err) throw err;
-  runSearch();
+  tableSearch();
 });
 
-function runSearch() {
-  inquirer
-    .prompt({
-      name: "action",
-      type: "rawlist",
-      message: "What would you like to do?",
-      choices: [
-        "Find songs by artist",
-        "Find all artists who appear more than once",
-        "Find data within a specific range",
-        "Search for a specific song",
-        "Find artists with a top song and top album in the same year"
-      ]
-    })
-    .then(function(answer) {
-      switch (answer.action) {
-        case "Find songs by artist":
-          artistSearch();
-          break;
-
-        case "Find all artists who appear more than once":
-          multiSearch();
-          break;
-
-        case "Find data within a specific range":
-          rangeSearch();
-          break;
-
-        case "Search for a specific song":
-          songSearch();
-          break;
-
-        case "Find artists with a top song and top album in the same year":
-          songAndAlbumSearch();
-          break;
-      }
-    });
-}
-
-function artistSearch() {
-  inquirer
-    .prompt({
-      name: "artist",
-      type: "input",
-      message: "What artist would you like to search for?"
-    })
-    .then(function(answer) {
-      var query = "SELECT position, song, year FROM top5000 WHERE ?";
-      connection.query(query, { artist: answer.artist }, function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || Song: " + res[i].song + " || Year: " + res[i].year);
-        }
-        runSearch();
-      });
-    });
-}
-
-function multiSearch() {
-  var query = "SELECT artist FROM top5000 GROUP BY artist HAVING count(*) > 1";
+// Return items for sale
+function tableSearch() {
+  var query = 'SELECT item_id, product_name, price FROM products';
   connection.query(query, function(err, res) {
-    for (var i = 0; i < res.length; i++) {
-      console.log(res[i].artist);
-    }
-    runSearch();
+    console.table(res);
+    ask();
   });
 }
 
-function rangeSearch() {
+// Item and quantity selection
+function ask() {
+  inquirer.prompt(questions).then(function(answer) {
+    compareInv(answer.product, answer.units);
+  });
+}
+
+// Compare units requested to inventory available
+function compareInv(product, units) {
+  var query = 'SELECT * FROM products WHERE item_id = ?';
+  connection.query(query, [product], function(err, res) {
+    if (units < res[0].stock_quantity) {
+      var unitRemainder = res[0].stock_quantity - units;
+      var unitSales = res[0].price * units + res[0].product_sales;
+      updateTable(product, unitRemainder, unitSales);
+    } else {
+      console.log('Insufficient quantity available for purchase.');
+      reset();
+    }
+  });
+}
+
+function reset() {
   inquirer
-    .prompt([
-      {
-        name: "start",
-        type: "input",
-        message: "Enter starting position: ",
-        validate: function(value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        }
-      },
-      {
-        name: "end",
-        type: "input",
-        message: "Enter ending position: ",
-        validate: function(value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        }
+    .prompt({
+      name: 'reset',
+      type: 'confirm',
+      message: 'Do you want to place another order?'
+    })
+    .then(function(answer) {
+      if (answer.reset === true) {
+        tableSearch();
+      } else {
+        console.log('We hope to see you again soon.');
+        process.exit(0);
       }
-    ])
-    .then(function(answer) {
-      var query = "SELECT position,song,artist,year FROM top5000 WHERE position BETWEEN ? AND ?";
-      connection.query(query, [answer.start, answer.end], function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log(
-            "Position: " +
-              res[i].position +
-              " || Song: " +
-              res[i].song +
-              " || Artist: " +
-              res[i].artist +
-              " || Year: " +
-              res[i].year
-          );
-        }
-        runSearch();
-      });
     });
 }
 
-function songSearch() {
-  inquirer
-    .prompt({
-      name: "song",
-      type: "input",
-      message: "What song would you like to look for?"
-    })
-    .then(function(answer) {
-      console.log(answer.song);
-      connection.query("SELECT * FROM top5000 WHERE ?", { song: answer.song }, function(err, res) {
-        console.log(
-          "Position: " +
-            res[0].position +
-            " || Song: " +
-            res[0].song +
-            " || Artist: " +
-            res[0].artist +
-            " || Year: " +
-            res[0].year
-        );
-        runSearch();
-      });
-    });
+// Update inventory quantity in SQL
+function updateTable(product, unitRemainder, unitSales) {
+  var query =
+    'UPDATE products SET stock_quantity = ?, product_sales = ? WHERE item_ID = ?';
+  connection.query(query, [unitRemainder, unitSales, product], function(
+    err,
+    res
+  ) {
+    if (err) {
+      throw err;
+    } else {
+      console.log(
+        `Your order has been place and your total is $${unitSales}. Thank you for your purchase.`
+      );
+      reset();
+    }
+  });
 }
-
-function songAndAlbumSearch() {
-  inquirer
-    .prompt({
-      name: "artist",
-      type: "input",
-      message: "What artist would you like to search for?"
-    })
-    .then(function(answer) {
-      var query = "SELECT top_albums.year, top_albums.album, top_albums.position, top5000.song, top5000.artist ";
-      query += "FROM top_albums INNER JOIN top5000 ON (top_albums.artist = top5000.artist AND top_albums.year ";
-      query += "= top5000.year) WHERE (top_albums.artist = ? AND top5000.artist = ?) ORDER BY top_albums.year ";
-
-      connection.query(query, [answer.artist, answer.artist], function(err, res) {
-        console.log(res.length + " matches found!");
-        for (var i = 0; i < res.length; i++) {
-          console.log(
-            "Album Position: " +
-              res[i].position +
-              " || Artist: " +
-              res[i].artist +
-              " || Song: " +
-              res[i].song +
-              " || Album: " +
-              res[i].album +
-              " || Year: " +
-              res[i].year
-          );
-        }
-
-        runSearch();
-      });
-    });
-}
-
