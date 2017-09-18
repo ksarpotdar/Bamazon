@@ -1,5 +1,7 @@
 ## Bamazon ##
 
+<br />
+
 This application an Amazon-like storefront coded with MySQL and Node.js.  It uses 3 different applications that have their own independent functions:
 
 
@@ -9,6 +11,7 @@ This application an Amazon-like storefront coded with MySQL and Node.js.  It use
 
 <br />
 <br />
+
 **Customer Application**
 
 To use the bamazonCustomer application, the user will first need to enter “node bamazonCustomer” at the application directory terminal prompt. The user will be returned a list of the items available for purchase with their ID number, Name and Price.
@@ -39,6 +42,8 @@ If the entered amount of units to purchase is less than the available inventory 
 <br />
 
 If the entered amount of units to purchase is more than the available inventory amount, the user will be returned a message stating that there is insufficient inventory available for the transaction and is followed by a prompt asking if the user would like to order another item.
+
+<br />
 
 ![Screenshot](/demo%20images/bamazonCustomer4.png)
 
