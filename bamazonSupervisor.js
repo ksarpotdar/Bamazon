@@ -89,7 +89,7 @@ function addNewDept(department, overheadcosts) {
 // Calculate sales by department
 function salesByDept() {
   var query =
-    'SELECT departments.department_name, over_head_costs, SUM(product_sales) AS total_sales, (over_head_costs - SUM(product_sales)) AS total_profit ';
+    'SELECT departments.department_name, over_head_costs, SUM(product_sales) AS total_sales, (SUM(product_sales) - over_head_costs) AS total_profit ';
   query +=
     'FROM departments INNER JOIN products ON (departments.department_name = products.department_name) ';
   query += 'GROUP BY departments.department_name';
