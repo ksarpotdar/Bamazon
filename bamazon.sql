@@ -7,23 +7,23 @@ CREATE TABLE products (
   item_id INT AUTO_INCREMENT NOT NULL,
   product_name VARCHAR(100) NULL,
   department_name VARCHAR(100) NULL,
-  price DECIMAL(10,2) NULL,
-  product_sales DECIMAL(10,2) NULL,
+  price DECIMAL(10,2) NOT NULL,
+  product_sales DECIMAL(10,2) NOT NULL,
   stock_quantity INT(10) NULL,
   PRIMARY KEY (item_id)
 );
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("bicycle", "sporting goods", 200.00, 10),
-        ("tv", "electronics", 900.00, 15),
-        ("playstation 4", "electronics", 400.00, 20),
-        ("football", "sporting goods", 20.00, 10),
-        ("xbox One", "electronics", 400.00, 20),
-        ("leather jacket", "clothing", 350.00, 5),
-        ("levi's jeans", "clothing", 65.00, 12),
-        ("wWatch", "jewelry", 375.00, 8),
-        ("diamond Ring", "jewelry", 750.00, 3),
-        ("dr. marten boots", "clothing", 300.00, 8);
+VALUES ("bicycle", "sporting goods", 200, 10),
+        ("tv", "electronics", 900, 15),
+        ("playstation 4", "electronics", 400, 20),
+        ("football", "sporting goods", 20, 10),
+        ("xbox One", "electronics", 400, 20),
+        ("leather jacket", "clothing", 350, 5),
+        ("levi's jeans", "clothing", 65, 12),
+        ("watch", "jewelry", 375, 8),
+        ("diamond Ring", "jewelry", 750, 3),
+        ("dr. marten boots", "clothing", 300, 8);
 
 
 CREATE TABLE departments (
@@ -34,10 +34,10 @@ CREATE TABLE departments (
 );
 
 INSERT INTO departments (department_name, over_head_costs)
-VALUES ("clothing", 12000.00),
-        ("electronics", 30000.00),
-        ("jewelry", 15000.00),
-        ("sporting goods", 10000.00);
+VALUES ("clothing", 12000),
+        ("electronics", 30000),
+        ("jewelry", 15000),
+        ("sporting goods", 10000);
 
 SELECT * FROM products;
-select * from departments;
+SELECT * FROM departments;
