@@ -2,19 +2,19 @@
 
 <br />
 
-This application an Amazon-like storefront coded with MySQL and Node.js.  It uses 3 different applications that have their own independent functions:
+This application is an Amazon-like storefront coded with MySQL and Node.js.  It uses 3 different applications that have their own independent functions:
 
 
-- bamazonCustomer
-- bamazonManager
-- bamazonSupervisor
+- Customer
+- Manager
+- Supervisor
 
 <br />
 <br />
 
 **Customer Application**
 
-To use the bamazonCustomer application, the user will first need to enter “node bamazonCustomer” at the application directory terminal prompt. The user will be returned a list of the items available for purchase with their ID number, Name and Price.
+To use the Customer application, the user will first need to enter “node bamazonCustomer” at the application directory terminal prompt. The user will be returned a list of the items available for purchase with their ID number, Name and Price.
 
 <br />
 
@@ -52,7 +52,7 @@ If the entered amount of units to purchase is more than the available inventory 
 
 **Manager Application**
 
-To use the bamazonManager application, the user will first need to enter “node bamazonManager” at the application directory terminal prompt.
+To use the Manager application, the user will first need to enter “node bamazonManager” at the application directory terminal prompt.
 
 Running this application will present a list a set of menu options:
 
@@ -114,7 +114,7 @@ When this is selected, the user will be presented with a prompt to allow the use
 
 **Supervisor Application**
 
-To use the bamazonSupervisor application, you will first need to enter “node bamazonSupervisor” at the application directory terminal prompt. 
+To use the Supervisor application, you will first need to enter “node bamazonSupervisor” at the application directory terminal prompt. 
 
 Running this application will list a set of menu options:
 
