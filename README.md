@@ -1,4 +1,4 @@
-## Bamazon ##
+## Bamazon
 
 <br />
 
@@ -144,6 +144,20 @@ When this is selected, the user will be displayed a summarized table in their te
 When this is selected, the user will be presented with a prompt to allow the user to add a completely new department to the database.
 
 ![Screenshot](/demo%20images/bamazonSupervisor3.png)
+
+
+## Built With
+
+* Express.js
+* JavaScript
+* MySQL
+* Node.js
+
+
+## Installing
+
+npm install
+
 
 
 
