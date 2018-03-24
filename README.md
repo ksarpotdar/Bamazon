@@ -148,7 +148,6 @@ When this is selected, the user will be presented with a prompt to allow the use
 
 ## Built With
 
-* Express.js
 * JavaScript
 * MySQL
 * Node.js
